@@ -135,6 +135,28 @@ chmod o-e random_file.txt
 ## 3. Operate Running Systems
 
 ### Boot, reboot, and shut down a system normally.
+
+#### Reboot system
+- Reboot system with ```shutdown``` command
+```bash
+sudo shutdown -r now
+```
+- Reboot system with ```systemctl``` command
+```bash
+sudo systemctl reboot
+```
+
+#### shut down system
+- Shutdown system at a persific time.
+```bash
+sudo shutdown --halt HH:MM
+```
+
+- Cancel a schedule shutdown:
+```bash
+sudo shutdown -c
+```
+
 ### Boot systems into different targets manually.
 ### Interrupt the boot process to gain access to a system.
 
