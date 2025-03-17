@@ -5,9 +5,56 @@
 ### Access a shell prompt and issue commands with correct syntax.
 ### Use input-output redirection (`>`, `>>`, `|`, `2>`, etc.).
 ### Use `grep` and regular expressions to analyze text.
+
 ### Access remote systems using SSH.
+1. Install openssh-server:
+```bash
+sudo dnf install openssh-server
+```
+2. start and enable openssh-server:
+```bash
+sudo systemctl enable --now sshd
+```
+3. Install openssh-clients
+```bash
+sudo dnf install -y openssh-clients
+```
+4. Login over ssh
+```bash
+ssh <username>@<IP_address_or_hostname>
+```
+5. If ssh is running on a different port:
+```bash
+ssh -p <port_number> <username>@<IP_address_or_hostname>
+``` 
 ### Log in and switch users in multiuser targets.
+1. Verify system is running in the multi-user level of operation.
+```bash
+systemctl get-default
+```
+
+2. If system not in multi-user runlevel, run the following and reboot system:
+```bash
+systemctl set-default multi-user
+```
+
+```bash
+reboot
+```
+
+3. Try logging in as root:
+```bash
+su -
+```
+
+4. Try logging in as another user:
+```bash
+su - <username>
+```
+ 
 ### Archive, compress, unpack, and uncompress files using `tar`, `gzip`, and `bzip2`.
+#### Archive with tar
+
 
 ### Create and edit text files.
 #### Create text files
@@ -184,6 +231,16 @@ sudo shutdown -c
 - Press Ctrl+d twice to exit chroot environment and reboot system.
 
 ### Identify CPU/memory intensive processes and kill processes.
+####
+- Identify cpu/memory intensive processes by running the command ```top```:
+```bash
+top
+```
+- To kill a process use the ```kill``` command:
+```bash
+kill <pid>
+```
+
 ### Adjust process scheduling.
 ### Manage tuning profiles.
 ### Locate and interpret system log files and journals.
