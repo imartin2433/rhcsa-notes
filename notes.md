@@ -250,12 +250,93 @@ kill <pid>
 
 ## 4. Configure Local Storage
 
-- List, create, delete partitions on MBR and GPT disks.
-- Create and remove physical volumes.
-- Assign physical volumes to volume groups.
-- Create and delete logical volumes.
-- Configure systems to mount file systems at boot (UUID or label).
-- Add new partitions and logical volumes, and swap to a system non-destructively.
+### List, create, delete partitions on MBR and GPT disks.
+
+#### MBR partition
+- List all partions
+```bash
+fdisk -l
+```
+
+##### Create a new MBR partition table
+- Enter the following command and then type ```o```:
+```bash
+sudo fdisk <drive>
+```
+
+##### Create new MBR partition
+1. Enter the following command:
+```bash
+sudo fdisk <drive>
+```
+
+2. Type ```n``` and press enter to create a new partition
+3. Choose ```p``` for a primary partition (MBR supports up to 4 primary partitons)
+4. Specify the partition number (1-4)
+5. Choose the first and last sectors (default values are usually fine).
+6. After creating the partition, type ```w``` to write the changes.
+
+##### Delete MBR partition
+1. Enter the following command:
+```bash
+sudo fdisk <drive>
+```
+2. Type ```d``` to delete a partition.
+3. Enter the partition number to delete.
+4. Type w to write the changes.
+
+- To create an MBR partition use ```fdisk```
+#### GPT partition:
+##### List Partitions
+- To list all partitions of a drive 
+```bash
+sudo gdisk -l <drive>
+```
+
+##### Create a new GPT partition table
+1. Enter the following command:
+```bash
+sudo gdisk <drive>
+```
+
+2. Type ```n``` and press enter to create a new partition
+3. Specify the partition number (1-4)
+4. Choose the first and last sectors (default values are usually fine).
+5. Choose the partition type (e.g., 8300 for Linux filesystems or another type as needed).
+6. After creating the partition, type ```w``` to write the changes.
+
+##### Delete GPT partition
+1. Enter the following command:
+```bash
+sudo gdisk <drive>
+```
+2. Type ```d``` to delete a partition.
+3. Enter the partition number to delete.
+4. Type ```w``` to write the changes.
+
+### Create and remove physical volumes.
+#### Create physical volumes
+1. Install LVM Tools (if not installed)
+```bash
+sudo dnf install lvm2
+```
+2. Identify the Disk or Partition
+```bash
+lsblk
+```
+3. Create the Physical Volume
+```bash
+sudo pvcreate <drive>
+```
+4. Verify the Physical Volume
+```bash
+sudo pvdisplay
+```
+
+### Assign physical volumes to volume groups.
+### Create and delete logical volumes.
+### Configure systems to mount file systems at boot (UUID or label).
+### Add new partitions and logical volumes, and swap to a system non-destructively.
 
 ## 5. Create and Configure File Systems
 
@@ -268,7 +349,67 @@ kill <pid>
 
 ## 6. Deploy, Configure, and Maintain Systems
 
-- Schedule tasks using `at` and `cron`.
+### Schedule tasks using `at` and `cron`.
+#### Schedule tasks using `at`
+1. install `at`
+```bash
+sudo dnf install at
+```
+2. Start and enable the atd service
+```bash
+sudo systemctl start atd
+sudo systemctl enable atd
+```
+3. Schedule a task
+```bash
+at <time>
+```
+4.  After entering an interactive shell, enter a command you want to run at the time you specified
+```bash
+echo "Hello, World!" > /home/username/hello.txt
+```
+##### ```at``` Time Formats:
+| **Time Format**              | **Example**                 | **Description**                                                        |
+|------------------------------|-----------------------------|------------------------------------------------------------------------|
+| **Specific time (24-hour format)** | `at 14:30`                | Runs the task at 2:30 PM (24-hour format).                             |
+| **Specific time (12-hour format)** | `at 2:30 PM`              | Runs the task at 2:30 PM (12-hour format).                             |
+| **Time tomorrow**            | `at 3:00 PM tomorrow`       | Runs the task at 3:00 PM on the next day.                              |
+| **Time in the future (relative)** | `at now + 5 minutes`       | Runs the task 5 minutes from the current time.                         |
+| **Time in the future (relative)** | `at now + 2 hours`        | Runs the task 2 hours from the current time.                           |
+| **Time in the future (relative)** | `at now + 1 day`          | Runs the task 1 day from the current time.                             |
+| **Specific date and time**    | `at 4:30 PM 2025-03-23`     | Runs the task on March 23, 2025 at 4:30 PM.                            |
+| **Specific weekday**          | `at 10:00 AM Monday`        | Runs the task at 10:00 AM on the next Monday.                          |
+| **Today at a specific time**  | `at 6:00 AM today`          | Runs the task at 6:00 AM today (if the current time is before 6:00 AM).|
+| **Next weekday at a specific time** | `at 7:00 PM Friday`    | Runs the task at 7:00 PM on the next Friday.                           |
+| **Weekday shorthand**         | `at 9:00 AM Mon`            | Runs the task at 9:00 AM on the next Monday (abbreviated weekday).     |
+| **Current time**              | `at now`                    | Runs the task immediately (or very shortly after).                     |
+| **Midnight**                  | `at midnight`               | Runs the task at midnight.                                             |
+| **Noon**                      | `at noon`                   | Runs the task at noon.                                                 |
+
+#### Schedule task with ```cron```
+1. Edit the crontab: Use crontab -e to open the cron job editor for the current user.
+2. Cron syntax:
+A cron job has the format:
+
+```* * * * * /path/to/command```
+
+- Minute (0-59)
+- Hour (0-23)
+- Day of the month (1-31)
+- Month (1-12)
+- Day of the week (0-6, Sunday=0)
+
+3. Example: To run a command at 2:00 AM every day:
+```bash
+0 2 * * * /path/to/command
+```
+
+4. Save and exit:
+After adding your cron job, save and exit the editor (Ctrl+X for nano, :wq for vi).
+
+5. View existing cron jobs:
+Use crontab -l to list all scheduled cron jobs.
+
 - Start and stop services, configure automatic boot services.
 - Configure systems to boot into a specific target automatically.
 - Configure time service clients.
